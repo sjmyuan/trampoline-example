@@ -29,6 +29,35 @@ public class CPSTest {
         }
     }
 
+    private boolean isEven(Long n) {
+
+        if (n == 0)
+            return true;
+        return isOdd(n - 1);
+    }
+
+    private boolean isOdd(Long n) {
+
+        if (n == 0)
+            return false;
+        return isEven(n - 1);
+
+    }
+
+private boolean isEvenCPS(Long n, Function<Boolean, Boolean> continuation) {
+    if (n == 0)
+        return continuation.apply(true);
+    return isOddCPS(n - 1, (result) -> continuation.apply(result));
+}
+
+private boolean isOddCPS(Long n, Function<Boolean, Boolean> continuation) {
+
+    if (n == 0)
+        return continuation.apply(false);
+    return isEvenCPS(n - 1, (result) -> continuation.apply(result));
+
+}
+
     @Test
     public void cpsShouldKeepLogic() {
 
@@ -52,5 +81,17 @@ public class CPSTest {
     public void cpsOptimizationMayAlsoThrowStackOverflowError() {
 
         factorialOptimization(10000l, (x) -> x);
+    }
+
+    @Test
+    public void isOddWillThrowStackOverflowError() {
+        isOdd(10000l);
+    }
+
+    @Test
+    public void isOddCPSShouldKeepLogic() {
+        for (Long n = 1l; n < 100; n++) {
+            assertThat(isOddCPS(n, x -> x)).isEqualTo(n % 2 == 1);
+        }
     }
 }
