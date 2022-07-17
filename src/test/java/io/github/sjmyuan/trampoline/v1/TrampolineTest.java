@@ -5,13 +5,6 @@ import org.junit.Test;
 
 public class TrampolineTest {
 
-    private Long factorial(Long n, Function<Long, Long> continuation) {
-        if (n == 1) {
-            return continuation.apply(1l);
-        }
-        return factorial(n - 1, (Long result) -> continuation.apply(n * result));
-    }
-
     private Trampoline factorialTrampoline(Long n, Function<Long, Trampoline> continuation) {
         System.out.println(n);
         if (n == 1) {

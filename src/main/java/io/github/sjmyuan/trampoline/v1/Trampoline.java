@@ -8,26 +8,26 @@ public interface Trampoline {
 
     public Trampoline resume();
 
-    public static Long run(Trampoline trampoline) {
+public static Long run(Trampoline trampoline) {
 
-        if (!trampoline.needToResume()) {
-            return trampoline.getResult();
-        }
-
-        return run(trampoline.resume());
+    if (!trampoline.needToResume()) {
+        return trampoline.getResult();
     }
 
-    public static Long runOptimization(Trampoline trampoline) {
+    return run(trampoline.resume());
+}
 
-        Trampoline trampolineParam = trampoline;
+public static Long runOptimization(Trampoline trampoline) {
 
-        while (true) {
+    Trampoline trampolineParam = trampoline;
 
-            if (!trampolineParam.needToResume()) {
-                return trampolineParam.getResult();
-            }
+    while (true) {
 
-            trampolineParam = trampolineParam.resume();
+        if (!trampolineParam.needToResume()) {
+            return trampolineParam.getResult();
         }
+
+        trampolineParam = trampolineParam.resume();
     }
+}
 }

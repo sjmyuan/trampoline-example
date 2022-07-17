@@ -44,19 +44,19 @@ public class CPSTest {
 
     }
 
-private boolean isEvenCPS(Long n, Function<Boolean, Boolean> continuation) {
-    if (n == 0)
-        return continuation.apply(true);
-    return isOddCPS(n - 1, (result) -> continuation.apply(result));
-}
+    private boolean isEvenCPS(Long n, Function<Boolean, Boolean> continuation) {
+        if (n == 0)
+            return continuation.apply(true);
+        return isOddCPS(n - 1, (result) -> continuation.apply(result));
+    }
 
-private boolean isOddCPS(Long n, Function<Boolean, Boolean> continuation) {
+    private boolean isOddCPS(Long n, Function<Boolean, Boolean> continuation) {
 
-    if (n == 0)
-        return continuation.apply(false);
-    return isEvenCPS(n - 1, (result) -> continuation.apply(result));
+        if (n == 0)
+            return continuation.apply(false);
+        return isEvenCPS(n - 1, (result) -> continuation.apply(result));
 
-}
+    }
 
     @Test
     public void cpsShouldKeepLogic() {
