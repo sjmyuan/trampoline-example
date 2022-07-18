@@ -42,7 +42,12 @@ public interface Trampoline<T> {
 
         Trampoline<S> trampolineParam = trampoline;
 
+        Long index = 1l;
+
         while (true) {
+
+            System.out.println("loop:" + index);
+            index++;
 
             if (trampolineParam instanceof Done) {
                 return ((Done<S>) trampolineParam).getResult();

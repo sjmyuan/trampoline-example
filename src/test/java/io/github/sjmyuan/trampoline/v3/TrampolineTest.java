@@ -2,6 +2,8 @@ package io.github.sjmyuan.trampoline.v3;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class TrampolineTest {
 
     private Trampoline<Long> factorialTrampoline(Long n) {
@@ -19,5 +21,15 @@ public class TrampolineTest {
 
         Trampoline.runOptimization(trampoline);
 
+    }
+
+    @Test
+    public void tooManyLeftAssociateContinuationWillNotThrowError() {
+        Trampoline<Long> trampoline = new Done<Long>(1l);
+        for (int i = 1; i < 50000; i++) {
+            trampoline = new Continuation<Long, Long>(trampoline, x -> new Done<Long>(x));
+        }
+
+        assertThat(Trampoline.runOptimization(trampoline)).isEqualTo(1);
     }
 }
