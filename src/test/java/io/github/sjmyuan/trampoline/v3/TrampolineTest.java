@@ -8,7 +8,8 @@ public class TrampolineTest {
         if (n == 1) {
             return new Done<Long>(1l);
         }
-        return new Continuation<Long, Long>(factorialTrampoline(n - 1), x -> new Done<Long>(n * x));
+        return new Continuation<Long, Long>(new More<Long>(() -> factorialTrampoline(n - 1)),
+                x -> new Done<Long>(n * x));
     }
 
     @Test

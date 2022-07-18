@@ -8,18 +8,7 @@ public class Done<T> implements Trampoline<T> {
         this.result = result;
     }
 
-    @Override
-    public boolean needToResume() {
-        return false;
-    }
-
-    @Override
     public T getResult() {
         return result;
-    }
-
-    @Override
-    public Trampoline<T> resume() {
-        return this;
     }
 }

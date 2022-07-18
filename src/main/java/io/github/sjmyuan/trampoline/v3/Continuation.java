@@ -14,25 +14,11 @@ public class Continuation<A, B> implements Trampoline<B> {
         this.continuation = continuation;
     }
 
-    @Override
-    public boolean needToResume() {
-        return true;
+    public Trampoline<A> getLastResult() {
+        return lastResult;
     }
 
-    @Override
-    public B getResult() {
-        return null;
+    public Function<A, Trampoline<B>> getContinuation() {
+        return continuation;
     }
-
-    @Override
-    public Trampoline<B> resume() {
-        if (!lastResult.needToResume()) {
-            return continuation.apply(lastResult.getResult());
-        }
-
-        Continuation<Object, A> temp = (Continuation<Object, A>) lastResult;
-        return new Continuation(temp.lastResult,
-                x -> new Continuation(temp.continuation.apply(x), this.continuation));
-    }
-
 }
