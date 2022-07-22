@@ -1,5 +1,6 @@
 package io.github.sjmyuan.trampoline;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import org.junit.Test;
 
@@ -7,25 +8,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CPSTest {
 
-    private Long factorial(Long n, Function<Long, Long> continuation) {
+    private void factorial(Long n, Consumer<Long> continuation) {
         if (n == 1) {
-            return continuation.apply(1l);
+            continuation.accept(1l);
+            return;
         }
-        return factorial(n - 1, (Long result) -> continuation.apply(n * result));
+        factorial(n - 1, (Long result) -> continuation.accept(n * result));
     }
 
-    private Long factorialOptimization(Long n, Function<Long, Long> continuation) {
+    private void factorialOptimization(Long n, Consumer<Long> continuation) {
         Long nParam = n;
-        Function<Long, Long> continuationParam = continuation;
+        Consumer<Long> continuationParam = continuation;
         while (true) {
             if (nParam == 1) {
-                return continuationParam.apply(1l);
+                continuationParam.accept(1l);
+                return;
             }
             Long nCurrent = nParam;
             nParam = nParam - 1;
 
-            final Function<Long, Long> currentContinuation = continuationParam;
-            continuationParam = (Long result) -> currentContinuation.apply(nCurrent * result);
+            final Consumer<Long> currentContinuation = continuationParam;
+            continuationParam = (Long result) -> currentContinuation.accept(nCurrent * result);
         }
     }
 
@@ -44,54 +47,60 @@ public class CPSTest {
 
     }
 
-    private boolean isEvenCPS(Long n, Function<Boolean, Boolean> continuation) {
-        if (n == 0)
-            return continuation.apply(true);
-        return isOddCPS(n - 1, (result) -> continuation.apply(result));
+    private void isEvenCPS(Long n, Consumer<Boolean> continuation) {
+        if (n == 0) {
+            continuation.accept(true);
+            return;
+        }
+        isOddCPS(n - 1, (result) -> continuation.accept(result));
     }
 
-    private boolean isOddCPS(Long n, Function<Boolean, Boolean> continuation) {
+    private void isOddCPS(Long n, Consumer<Boolean> continuation) {
 
-        if (n == 0)
-            return continuation.apply(false);
-        return isEvenCPS(n - 1, (result) -> continuation.apply(result));
-
+        if (n == 0) {
+            continuation.accept(false);
+            return;
+        }
+        isEvenCPS(n - 1, (result) -> continuation.accept(result));
     }
 
     @Test
     public void cpsShouldKeepLogic() {
 
-        assertThat(factorial(4l, (x) -> x)).isEqualTo(24);
-
+        factorial(4l, (x) -> assertThat(x).isEqualTo(24));
     }
 
     @Test
     public void cpsMayAlsoThrowStackOverflowError() {
-        factorial(10000l, (x) -> x);
+        factorial(10000l, (x) -> {
+        });
     }
 
     @Test
     public void optimizationShouldKeepLogic() {
         for (Long n = 1l; n < 10; n++) {
-            assertThat(factorialOptimization(n, (x) -> x)).isEqualTo(factorial(n, (x) -> x));
+            final Long nAlias = n;
+            factorialOptimization(n, (x) -> factorial(nAlias, y -> assertThat(x).isEqualTo(y)));
         }
     }
 
     @Test
     public void cpsOptimizationMayAlsoThrowStackOverflowError() {
 
-        factorialOptimization(10000l, (x) -> x);
+        factorialOptimization(10000l, (x) -> {
+        });
     }
 
     @Test
     public void isOddWillThrowStackOverflowError() {
-        isOdd(10000l);
+        isOdd(20000l);
     }
 
     @Test
     public void isOddCPSShouldKeepLogic() {
         for (Long n = 1l; n < 100; n++) {
-            assertThat(isOddCPS(n, x -> x)).isEqualTo(n % 2 == 1);
+            final Long nAlias = n;
+            isOddCPS(n, x -> assertThat(x).isEqualTo(nAlias % 2 == 1));
         }
     }
 }
