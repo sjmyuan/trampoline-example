@@ -1,7 +1,6 @@
 package io.github.sjmyuan.trampoline;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
