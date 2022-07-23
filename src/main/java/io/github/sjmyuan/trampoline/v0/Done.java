@@ -1,4 +1,4 @@
-package io.github.sjmyuan.trampoline.v1;
+package io.github.sjmyuan.trampoline.v0;
 
 public class Done implements Trampoline {
 

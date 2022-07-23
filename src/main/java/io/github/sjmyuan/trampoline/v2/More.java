@@ -12,10 +12,6 @@ public class More<T> implements Trampoline<T> {
 
     }
 
-    public Supplier<Trampoline<T>> getK() {
-        return thunk;
-    }
-
     @Override
     public boolean needToResume() {
         return true;
