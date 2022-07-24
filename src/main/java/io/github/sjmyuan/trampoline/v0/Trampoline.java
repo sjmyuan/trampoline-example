@@ -2,14 +2,14 @@ package io.github.sjmyuan.trampoline.v0;
 
 public interface Trampoline {
 
-    public static Long run(Trampoline trampoline) {
+public static Long run(Trampoline trampoline) {
 
-        if (trampoline instanceof Done) {
-            return ((Done) trampoline).getResult();
-        }
-
-        return run(((More) trampoline).getThunk().get());
+    if (trampoline instanceof Done) {
+        return ((Done) trampoline).getResult();
     }
+
+    return run(((More) trampoline).getThunk().get());
+}
 
     public static Long runOptimization(Trampoline trampoline) {
 
